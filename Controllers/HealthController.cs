@@ -26,6 +26,7 @@ namespace LoginWebApp.Api.Controllers
         [HttpGet]
         public IActionResult HealthCheck()
         {
+            _logger.LogInformation("Health check successful");
             return Ok("API Healthy");
         }
     }

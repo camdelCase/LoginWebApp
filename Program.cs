@@ -4,19 +4,17 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add logging configuration
-var logConfig = new LoggerConfiguration();
-logConfig.ReadFrom.Configuration(builder.Configuration);
-var logger = logConfig.Enrich.FromLogContext().CreateLogger();
-builder.Logging.ClearProviders();
-builder.Logging.AddSerilog(logger);
+// Serilog takes its sinks and levels from the "Serilog" section of appsettings
+builder.Services.AddSerilog((services, logConfig) => logConfig
+    .ReadFrom.Configuration(builder.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext());
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddAppAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddAuthorization();
 builder.Services.AddHealthChecks();
-builder.Services.AddSerilog();
 
 // Register Swagger services
 builder.Services.AddEndpointsApiExplorer();
@@ -40,6 +38,9 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// First in the pipeline so requests that end early (401s, health checks) are logged too
+app.UseSerilogRequestLogging();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -54,7 +55,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseHealthChecks("/");
-
-app.UseSerilogRequestLogging();
 
 app.Run();

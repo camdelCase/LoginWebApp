@@ -28,6 +28,10 @@ docker build -t loginwebapp-api .       # container listens on 8080 (http) / 808
 
 Local tokens deliberately use Cognito's claim names (`sub`, `username`, `cognito:groups`; see `Model/Auth/AuthClaimTypes.cs`), and `MapInboundClaims = false` keeps them unrenamed. Read claims through `AuthClaimTypes` so code works under both providers. Identify users by `sub`, never by a local `Users` row, because that table doesn't exist under Cognito.
 
+## Logging
+
+Serilog is configured entirely by the `Serilog` section of `appsettings.json` (console sink only; stdout is what Docker and AWS collect). The ASP.NET `Logging` section isn't used. `UseSerilogRequestLogging` is first in the pipeline, so it logs every request, including short-circuited 401s.
+
 ## Conventions
 
 Controllers use block-scoped namespaces, constructor injection into `_camelCase` readonly fields, and `/// <summary>` docs on actions.

@@ -2,6 +2,7 @@
 using LoginWebApp.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 
 namespace LoginWebApp.Api.Controllers
 {
@@ -40,13 +41,16 @@ namespace LoginWebApp.Api.Controllers
             switch (result.Status)
             {
                 case LoginStatus.Success:
+                    _logger.LogInformation("Successful login for {Username}", request.Username);
                     return Ok(result.Tokens);
 
                 case LoginStatus.NotConfirmed:
+                    _logger.LogInformation("Failed login due to unconfirmed account for {Username}", request.Username);
                     return Problem("Account not confirmed. Enter the code sent to your email.",
                         statusCode: StatusCodes.Status403Forbidden);
 
                 case LoginStatus.ChallengeRequired:
+                    _logger.LogInformation("Challenge required for {Username}", request.Username);
                     return Problem($"Additional sign-in step required ({result.ChallengeName}), which is not supported yet.",
                         statusCode: StatusCodes.Status403Forbidden);
 
@@ -68,13 +72,22 @@ namespace LoginWebApp.Api.Controllers
         {
             var result = await _authService.RegisterAsync(request);
 
-            return result.Status switch
+
+            switch (result.Status)
             {
-                RegisterStatus.Created => Created((string?)null, new RegisterResponse { ConfirmationRequired = false }),
-                RegisterStatus.PendingConfirmation => Created((string?)null, new RegisterResponse { ConfirmationRequired = true }),
-                RegisterStatus.UsernameTaken => Conflict("Username is already taken"),
-                _ => Problem(result.Message, statusCode: StatusCodes.Status400BadRequest)
-            };
+                case RegisterStatus.Created:
+                    _logger.LogInformation("Registration succeeded for {Username}", request.Username);
+                    return Created((string?)null, new RegisterResponse { ConfirmationRequired = false });
+                case RegisterStatus.PendingConfirmation:
+                    _logger.LogInformation("Registration pending: Confirmation required for {Username}", request.Username);
+                    return Created((string?)null, new RegisterResponse { ConfirmationRequired = true });
+                case RegisterStatus.UsernameTaken:
+                    _logger.LogInformation("Registration failed: Username is already taken for {Username}", request.Username);
+                    return Conflict("Username is already taken");
+                default:
+                    _logger.LogInformation("Registration failed for {Username}", request.Username);
+                    return Problem(result.Message, statusCode: StatusCodes.Status400BadRequest);
+            }
         }
 
         /// <summary>
@@ -87,9 +100,16 @@ namespace LoginWebApp.Api.Controllers
         {
             var result = await _authService.ConfirmRegistrationAsync(request);
 
-            return result.Status == ConfirmStatus.Confirmed
-                ? NoContent()
-                : Problem(result.Message, statusCode: StatusCodes.Status400BadRequest);
+            if (result.Status == ConfirmStatus.Confirmed)
+            {
+                _logger.LogInformation("Registration confirmed for {Username}", request.Username);
+                return NoContent();
+            }
+            else
+            {
+                _logger.LogInformation("Registration confirmation failed for {Username}", request.Username);
+                return Problem(result.Message, statusCode: StatusCodes.Status400BadRequest);
+            }
         }
     }
 }
