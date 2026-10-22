@@ -1,7 +1,18 @@
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add logging configuration
+var logConfig = new LoggerConfiguration();
+logConfig.ReadFrom.Configuration(builder.Configuration);
+var logger = logConfig.Enrich.FromLogContext().CreateLogger();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddHealthChecks();
+builder.Services.AddSerilog();
 
 // Register Swagger services
 builder.Services.AddEndpointsApiExplorer();
@@ -23,5 +34,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseHealthChecks("/");
+
+app.UseSerilogRequestLogging();
 
 app.Run();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace LoginWebApp.Controllers
 {
@@ -7,6 +8,17 @@ namespace LoginWebApp.Controllers
     [ApiController]
     public class HealthController : ControllerBase
     {
+        private readonly ILogger<HealthController> _logger;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger"></param>
+        public HealthController(ILogger<HealthController> logger)
+        {
+            _logger = logger;
+        }
+
         /// <summary>
         /// Basic health check to confirm the application is running
         /// </summary>
