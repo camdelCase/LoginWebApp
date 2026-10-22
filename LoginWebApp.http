@@ -1,6 +1,44 @@
 @LoginWebApp_HostAddress = http://localhost:5154
 
-GET {{LoginWebApp_HostAddress}}/weatherforecast/
+GET {{LoginWebApp_HostAddress}}/api/health
 Accept: application/json
+
+###
+
+POST {{LoginWebApp_HostAddress}}/api/user/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "testuser@example.com",
+  "password": "Passw0rd!"
+}
+
+###
+
+# Cognito only: the code emailed after registering
+POST {{LoginWebApp_HostAddress}}/api/user/auth/confirm
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "code": "123456"
+}
+
+###
+
+# @name login
+POST {{LoginWebApp_HostAddress}}/api/user/auth/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "Passw0rd!"
+}
+
+###
+
+GET {{LoginWebApp_HostAddress}}/api/user/me
+Authorization: Bearer {{login.response.body.$.accessToken}}
 
 ###

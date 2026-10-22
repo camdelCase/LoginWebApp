@@ -2,11 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project state
+## Project
 
-ASP.NET Core Web API (.NET 10, `net10.0`) created from the Visual Studio "ASP.NET Core Web API" template with controllers. No login/auth functionality exists yet; the only endpoint is the template's `WeatherForecastController`. The template's `WeatherForecast.cs` model was removed, so **the project currently does not build** (CS0246 in `Controllers/WeatherForecastController.cs`) until that controller is deleted or the model is restored.
-
-There is no test project yet.
+ASP.NET Core Web API (.NET 10, `net10.0`) that provides login. It uses Serilog for logging and Swashbuckle for Swagger UI (`/swagger`, Development only). There is no test project yet.
 
 ## Commands
 
@@ -14,14 +12,22 @@ There is no test project yet.
 dotnet build                          # build (solution file: LoginWebApp.slnx)
 dotnet run --launch-profile http      # http://localhost:5154
 dotnet run --launch-profile https     # https://localhost:7255 + http://localhost:5154
+dotnet ef migrations add <Name> --output-dir Data/Migrations
+dotnet ef database update             # apply migrations to the LocalDB database
 docker build -t loginwebapp .         # container listens on 8080 (http) / 8081 (https)
 ```
 
-`LoginWebApp.http` holds sample requests for the VS/VS Code REST client, targeting `http://localhost:5154`.
+`LoginWebApp.http` holds sample register → login → `/api/user/me` requests.
 
-## Architecture
+## Authentication: two providers, one switch
 
-- `Program.cs`: minimal hosting setup. Registers controllers and OpenAPI (`AddOpenApi`). The OpenAPI document is mapped only in Development, at `/openapi/v1.json`; there is no Swagger UI. The pipeline is HTTPS redirection → `UseAuthorization` → `MapControllers`. `UseAuthorization` is present, but no authentication scheme is registered yet.
-- `Controllers/`: attribute-routed `[ApiController]` classes in the `LoginWebApp.Controllers` namespace, routed by `[Route("[controller]")]`.
-- Config: `appsettings.json` / `appsettings.Development.json`. User Secrets is enabled (`UserSecretsId` in the csproj), so put local secrets such as connection strings and signing keys there with `dotnet user-secrets`, not in appsettings.
-- Nullable reference types and implicit usings are enabled.
+`Auth:Provider` in configuration selects the provider. All wiring lives in `Model/Auth/AuthServiceExtensions.cs` (`AddAppAuthentication`). `AuthController` (`/api/user/auth/login`, `/register`, `/confirm`) serves the app's own login page in both modes and depends only on `IAuthService`, which has one implementation per provider. Both providers use JWT bearer authentication for protected endpoints:
+
+- **Local** (set in `appsettings.Development.json`): `LocalAuthService` stores users in SQL Server LocalDB (`Model/AppDbContext`, connection string `DefaultConnection`), hashes passwords with `PasswordHasher<User>`, and issues HS256 tokens through `TokenService`. Users are active immediately, so `/confirm` returns 400. The signing key `Auth:Local:SigningKey` lives in **user secrets** (at least 32 characters), not in appsettings. Startup throws if Local is used in the Production environment.
+- **Cognito** (the default in `appsettings.json`): `CognitoAuthService` forwards requests to the user pool through `InitiateAuth` (USER_PASSWORD_AUTH, so the app client must allow `ALLOW_USER_PASSWORD_AUTH`), `SignUp` and `ConfirmSignUp`. These are public Cognito APIs, so the SDK client uses anonymous credentials. Set `Auth:Cognito:ClientSecret` only if the app client has a secret; the `SECRET_HASH` is then added automatically. Cognito challenges such as MFA or a forced new password come back as a 403 and aren't handled yet. Token validation uses the pool's OpenID metadata; because Cognito access tokens have no `aud` claim, `OnTokenValidated` checks the `client_id` and `token_use=access` claims instead.
+
+Local tokens deliberately use Cognito's claim names (`sub`, `username`, `cognito:groups`; see `Model/Auth/AuthClaimTypes.cs`), and `MapInboundClaims = false` keeps them unrenamed. Read claims through `AuthClaimTypes` so code works under both providers. Identify users by `sub`, never by a local `Users` row, because that table doesn't exist under Cognito.
+
+## Conventions
+
+Controllers use block-scoped namespaces, constructor injection into `_camelCase` readonly fields, and `/// <summary>` docs on actions.
