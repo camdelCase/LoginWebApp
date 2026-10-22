@@ -1,8 +1,8 @@
-using LoginWebApp.Model;
+using LoginWebApp.Api.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace LoginWebApp.Services
+namespace LoginWebApp.Api.Services
 {
     /// <summary>
     /// Users stored in the local SQL database. Only registered when Auth:Provider is Local.

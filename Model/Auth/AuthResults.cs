@@ -1,4 +1,4 @@
-namespace LoginWebApp.Model.Auth
+namespace LoginWebApp.Api.Model.Auth
 {
     public enum LoginStatus
     {

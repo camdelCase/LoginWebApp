@@ -1,4 +1,4 @@
-namespace LoginWebApp.Model
+namespace LoginWebApp.Api.Model
 {
     /// <summary>
     /// A locally stored user. Only used when Auth:Provider is Local; under Cognito the

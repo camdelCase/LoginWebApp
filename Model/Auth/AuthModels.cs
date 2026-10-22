@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace LoginWebApp.Model.Auth
+namespace LoginWebApp.Api.Model.Auth
 {
     public class LoginRequest
     {

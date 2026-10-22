@@ -2,10 +2,10 @@ using System.Security.Cryptography;
 using System.Text;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
-using LoginWebApp.Model.Auth;
+using LoginWebApp.Api.Model.Auth;
 using Microsoft.Extensions.Options;
 
-namespace LoginWebApp.Services
+namespace LoginWebApp.Api.Services
 {
     /// <summary>
     /// Forwards login and registration to a Cognito user pool. Only registered when Auth:Provider is Cognito.

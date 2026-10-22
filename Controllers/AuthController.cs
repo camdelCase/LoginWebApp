@@ -1,9 +1,9 @@
-﻿using LoginWebApp.Model.Auth;
-using LoginWebApp.Services;
+﻿using LoginWebApp.Api.Model.Auth;
+using LoginWebApp.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LoginWebApp.Controllers
+namespace LoginWebApp.Api.Controllers
 {
     /// <summary>
     /// Login and registration for the app's own login page. Works with both providers:

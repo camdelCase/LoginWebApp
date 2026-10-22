@@ -9,15 +9,15 @@ ASP.NET Core Web API (.NET 10, `net10.0`) that provides login. It uses Serilog f
 ## Commands
 
 ```
-dotnet build                          # build (solution file: LoginWebApp.slnx)
+dotnet build                          # build (solution file: LoginWebApp.Api.slnx)
 dotnet run --launch-profile http      # http://localhost:5154
 dotnet run --launch-profile https     # https://localhost:7255 + http://localhost:5154
 dotnet ef migrations add <Name> --output-dir Data/Migrations
 dotnet ef database update             # apply migrations to the LocalDB database
-docker build -t loginwebapp .         # container listens on 8080 (http) / 8081 (https)
+docker build -t loginwebapp-api .       # container listens on 8080 (http) / 8081 (https)
 ```
 
-`LoginWebApp.http` holds sample register → login → `/api/user/me` requests.
+`LoginWebApp.Api.http` holds sample register → login → `/api/user/me` requests.
 
 ## Authentication: two providers, one switch
 

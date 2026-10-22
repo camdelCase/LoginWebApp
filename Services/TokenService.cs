@@ -1,12 +1,12 @@
 using System.Security.Claims;
 using System.Text;
-using LoginWebApp.Model;
-using LoginWebApp.Model.Auth;
+using LoginWebApp.Api.Model;
+using LoginWebApp.Api.Model.Auth;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
-namespace LoginWebApp.Services
+namespace LoginWebApp.Api.Services
 {
     /// <summary>
     /// Issues JWTs for locally stored users. Only registered when Auth:Provider is Local.

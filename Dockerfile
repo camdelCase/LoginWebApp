@@ -12,19 +12,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["LoginWebApp.csproj","."]
-RUN dotnet restore "./LoginWebApp.csproj"
+COPY ["LoginWebApp.Api.csproj","."]
+RUN dotnet restore "./LoginWebApp.Api.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "./LoginWebApp.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./LoginWebApp.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./LoginWebApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./LoginWebApp.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "LoginWebApp.dll"]
+ENTRYPOINT ["dotnet", "LoginWebApp.Api.dll"]

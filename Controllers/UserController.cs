@@ -1,8 +1,8 @@
-using LoginWebApp.Model.Auth;
+using LoginWebApp.Api.Model.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LoginWebApp.Controllers
+namespace LoginWebApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,4 +1,4 @@
-using LoginWebApp.Model.Auth;
+using LoginWebApp.Api.Model.Auth;
 using Microsoft.OpenApi;
 using Serilog;
 

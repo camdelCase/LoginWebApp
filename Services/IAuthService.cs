@@ -1,6 +1,6 @@
-using LoginWebApp.Model.Auth;
+using LoginWebApp.Api.Model.Auth;
 
-namespace LoginWebApp.Services
+namespace LoginWebApp.Api.Services
 {
     /// <summary>
     /// Login and registration for whichever provider Auth:Provider selects.

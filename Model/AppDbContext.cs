@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace LoginWebApp.Model
+namespace LoginWebApp.Api.Model
 {
     public class AppDbContext : DbContext
     {

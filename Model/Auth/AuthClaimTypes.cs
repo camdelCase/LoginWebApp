@@ -1,4 +1,4 @@
-namespace LoginWebApp.Model.Auth
+namespace LoginWebApp.Api.Model.Auth
 {
     /// <summary>
     /// Claim names used by Cognito access tokens. Local tokens use the same names so

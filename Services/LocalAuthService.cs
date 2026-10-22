@@ -1,6 +1,6 @@
-using LoginWebApp.Model.Auth;
+using LoginWebApp.Api.Model.Auth;
 
-namespace LoginWebApp.Services
+namespace LoginWebApp.Api.Services
 {
     /// <summary>
     /// Users in the local SQL database; tokens issued by this API. Only registered when Auth:Provider is Local.

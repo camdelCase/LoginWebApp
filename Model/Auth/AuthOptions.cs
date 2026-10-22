@@ -1,4 +1,4 @@
-namespace LoginWebApp.Model.Auth
+namespace LoginWebApp.Api.Model.Auth
 {
     /// <summary>
     /// Which system issues the access tokens this API accepts

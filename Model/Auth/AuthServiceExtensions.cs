@@ -1,12 +1,12 @@
 using Amazon;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Runtime;
-using LoginWebApp.Services;
+using LoginWebApp.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace LoginWebApp.Model.Auth
+namespace LoginWebApp.Api.Model.Auth
 {
     public static class AuthServiceExtensions
     {

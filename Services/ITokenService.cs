@@ -1,7 +1,7 @@
-using LoginWebApp.Model;
-using LoginWebApp.Model.Auth;
+using LoginWebApp.Api.Model;
+using LoginWebApp.Api.Model.Auth;
 
-namespace LoginWebApp.Services
+namespace LoginWebApp.Api.Services
 {
     public interface ITokenService
     {

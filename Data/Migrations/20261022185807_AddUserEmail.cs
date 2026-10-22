@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace LoginWebApp.Data.Migrations
+namespace LoginWebApp.Api.Data.Migrations
 {
     /// <inheritdoc />
     public partial class AddUserEmail : Migration

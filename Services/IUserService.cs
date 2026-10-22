@@ -1,6 +1,6 @@
-using LoginWebApp.Model;
+using LoginWebApp.Api.Model;
 
-namespace LoginWebApp.Services
+namespace LoginWebApp.Api.Services
 {
     public interface IUserService
     {

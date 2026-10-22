@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace LoginWebApp.Controllers
+namespace LoginWebApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
