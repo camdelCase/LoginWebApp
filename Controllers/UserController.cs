@@ -4,18 +4,10 @@
 
 namespace LoginWebApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/user/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        /// <summary>
-        /// Basic health check to confirm the User API is running
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("healthcheck")]
-        public async Task<ActionResult> HealthCheck()
-        {
-            return Ok();
-        }
+        
     }
 }
